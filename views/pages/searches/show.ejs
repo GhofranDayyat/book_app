@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <title>Document</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <title>Book Collection</title>
 </head>
+
 <body>
-    <main>
-        
-    </main>
+  <main>
+    <section class="main-sec">
+      <% searchResults.forEach(book=> {%>
+      <section class="book-sec">
+      <img src="<%= book.thumbnail %>" alt="">
+      <h3><%= book.title %></h3>
+      <h4><%= book.author%></h4>
+      <p><%= book.description%></p>
+    </section>
+    <% }) %>
+  
+    </section>
+   
+
+  </main>
 </body>
+
 </html>

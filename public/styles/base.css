@@ -1,4 +1,45 @@
-body {
-    background-color: lightblue;
+
+  img{
+    border: 5px solid whitesmoke;
+  }
+
+  form{
+    padding: 5%;
+    border: 3px solid #227e81;
+    display: inline-block;
+    margin-left: 50%;
+    /* margin-top: 30%; */
 
   }
+  h2{
+    margin-left: 50%;
+    margin-top: 10%;
+    color: #053536;
+  }
+  h1{
+    padding-left: 25%;
+    padding-top: 10%;
+    color: #053536;
+    font-size: 800%;
+  }
+  input{
+    background-color: #bdcebe;
+    top: 50%;
+    z-index: 99;
+    padding: 5%;
+    margin: 5%;
+  }
+button{
+  background-color: #053536;
+  color: #bdcebe;
+  border: #053536;
+}
+  label, fieldset, button{
+    margin: 5%;
+  }
+  body{
+ background-color:  #bdcebe;
+  }
+#error-img{
+  margin-left: 40%;
+}

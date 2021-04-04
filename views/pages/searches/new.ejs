@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../styles/style.css" />
+    <title>Show File</title>
+</head>
+<body>
+    <main>
+      </style>
+        <h2>Serach by Title or Author </h2>
+        <form action="/searches" method="POST" >
+            <input type="text" name="search" placeholder="Enter  Title or Author" required>
+            <fieldset>
+                <label for="title">
+                  <span>Title</span>
+                  <input type="radio" name="searchBy" value="title" required>
+                </label>
+              </fieldset>
+              <fieldset>
+                <label for="author">
+                  <span>Auther</span>
+                  <input type="radio" name="searchBy" value="author" required>
+                </label>
+              </fieldset>
+              <button type="submit">Search the Google Books API</button> 
+        </form>
+    </main>
+</body>
+</html>

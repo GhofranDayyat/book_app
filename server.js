@@ -6,11 +6,11 @@ require('dotenv').config();
 const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
-const pg = require('pg');
+// const pg = require('pg');
 
 
 //client Obj
-const client = new pg.Client(process.env.DATABASE_URL);
+// const client = new pg.Client(process.env.DATABASE_URL);
 
 // Application Setup
 const app = express();
@@ -82,16 +82,16 @@ app.get('*',(req,res)=>{
   res.status(404).send('something went wrong');
 });
 
-// app.listen(PORT,()=>{
-//   console.log(`listening on PORT ${PORT}`);
-// });
+app.listen(PORT,()=>{
+  console.log(`listening on PORT ${PORT}`);
+});
 
 
 // Connect to DB and Start the Web Server
-client.connect().then(() => {
-  app.listen(PORT, () => {
-    console.log('Connected to database:', client.connectionParameters.database) ;//show what database we connected to
-    console.log('Server up on', PORT);
-  });
-});
+// client.connect().then(() => {
+//   app.listen(PORT, () => {
+//     console.log('Connected to database:', client.connectionParameters.database) ;//show what database we connected to
+//     console.log('Server up on', PORT);
+//   });
+// });
 

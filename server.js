@@ -6,12 +6,15 @@ require('dotenv').config();
 const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
 
+
+//client Obj
+const client = new pg.Client(process.env.DATABASE_URL);
 
 // Application Setup
 const app = express();
 const PORT = process.env.PORT || 3434;
-
 
 // Application Middleware
 app.use(express.static('./public'));
@@ -39,11 +42,11 @@ function showForm(req,res){
 
 //Constrecter
 function Book(info) {
-  this.title = info.title;
-  this.author = info.authors || 'Authors';
-  this.description = info.description;
-  this.thumbnail = 'https://i.imgur.com/J5LVHEL.jpg';
-  // this.thumbnail = (info.imageLinks.thumbnail)? info.imageLinks.thumbnail : 'https://i7.uihere.com/icons/829/139/596/thumbnail-caefd2ba7467a68807121ca84628f1eb.png';
+  this.title = info.title?info.title:'Title was Found';
+  this.author = info.authors ? info.authors[0] :'Authors Were Found';
+  this.description = info.descriptio?info.description:'Description was Found';
+  this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i7.uihere.com/icons/829/139/596/thumbnail-caefd2ba7467a68807121ca84628f1eb.png';
+
 }
 
 function createSearch(req,res){
@@ -79,6 +82,16 @@ app.get('*',(req,res)=>{
   res.status(404).send('something went wrong');
 });
 
-app.listen(PORT,()=>{
-  console.log(`listening on PORT ${PORT}`);
+// app.listen(PORT,()=>{
+//   console.log(`listening on PORT ${PORT}`);
+// });
+
+
+// Connect to DB and Start the Web Server
+client.connect().then(() => {
+  app.listen(PORT, () => {
+    console.log('Connected to database:', client.connectionParameters.database) ;//show what database we connected to
+    console.log('Server up on', PORT);
+  });
 });
+

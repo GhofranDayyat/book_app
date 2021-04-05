@@ -6,11 +6,11 @@ require('dotenv').config();
 const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
-const pg = require('pg');
+// const pg = require('pg');
 
 
 //client Obj
-const client = new pg.Client(process.env.DATABASE_URL);
+// const client = new pg.Client(process.env.DATABASE_URL);
 
 // Application Setup
 const app = express();
@@ -121,4 +121,11 @@ client.connect().then(()=>{
   });
 
 });
+
+app.listen(PORT,()=>{
+  console.log(`listening on PORT ${PORT}`);
+});
+
+
+
 

@@ -28,15 +28,44 @@ app.set('view engine','ejs');
 app.get( `/searches/new`,showForm);
 app.get('/',homePage);
 app.post('/searches',createSearch);
-
-
+app.get('/books/:id',getBookDetail);
+app.post('/books',saveBook);
 
 function homePage(req,res){
-  res.render('pages/index');
+  const selectQuuery = 'SELECT * FROM tasks;';
+  client.query(selectQuuery).then(result=>{
+    res.render('pages/index',{result: result.rows});
+  }).catch(error=>{
+    handleError(error, res);
+  });
 }
 
 function showForm(req,res){
   res.render('pages/searches/new.ejs');
+}
+
+
+function getBookDetail(req,res){
+  const bookId = req.params.id;
+  const sqlQuery = 'SELECT * FROM tasks WHERE id=$1';
+  const saveValus = [bookId];
+  client.query(sqlQuery,saveValus).then(results=>{
+    res.render('pages/books/detail.ejs',{results:results.rows});
+  }).catch(error=>{
+    handleError(error, res);
+  });
+}
+
+
+function saveBook(req, res){
+  const {auther, title, isbn,image_url, description}=req.body;
+  const sqleSave = [auther, title, isbn,image_url, description];
+  const sqlQuery = 'INSERT INTO tasks (auther, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5);';
+  client.query(sqlQuery, sqleSave).then(()=>{
+    res.redirect('/');
+  }).catch(error=>{
+    handleError(error, res);
+  });
 }
 
 
@@ -46,13 +75,13 @@ function Book(info) {
   this.author = info.authors ? info.authors[0] :'Authors Were Found';
   this.description = info.descriptio?info.description:'Description was Found';
   this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i7.uihere.com/icons/829/139/596/thumbnail-caefd2ba7467a68807121ca84628f1eb.png';
-
+  this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No ISBN available';
 }
 
 function createSearch(req,res){
 
   let url = 'https://www.googleapis.com/books/v1/volumes';
-  console.log(req.body);
+  // console.log(req.body);
   const searchBy = req.body.searchBy;
   const searchValue = req.body.search;
   const query = {};
@@ -62,36 +91,34 @@ function createSearch(req,res){
   } else if (searchBy === 'author') {
     query['q'] = `inauthor:'${searchValue}'`;
   }
-  console.log(searchValue);
+  // console.log(searchValue);
   // send the URL to the servers API
-  console.log(query);
+  // console.log(query);
   superagent.get(url).query(query).then(search => {
     return search.body.items.map(searchBook => new Book(searchBook.volumeInfo));
   }).then(results => {
     res.render('pages/searches/show', { searchResults: results });
   }).catch((error) => {
-    console.error('ERROR', error);
-    res.status(500).render('pages/error');
+    handleError(error, res);
   });
 }
 
 
 
-// Catch-all-errors
-app.get('*',(req,res)=>{
-  res.status(404).send('something went wrong');
-});
+function handleError(error, res) {
+  res.render('pages/error', { error: error });
+}
 
-// app.listen(PORT,()=>{
-//   console.log(`listening on PORT ${PORT}`);
+// Catch-all-errors
+// app.get('*',(req,res)=>{
+//   res.status(404).send('something went wrong');
 // });
 
 
-// Connect to DB and Start the Web Server
-client.connect().then(() => {
-  app.listen(PORT, () => {
-    console.log('Connected to database:', client.connectionParameters.database) ;//show what database we connected to
-    console.log('Server up on', PORT);
+client.connect().then(()=>{
+  app.listen(PORT,()=>{
+    console.log(`listening on PORT ${PORT}`);
   });
+
 });
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../../layout/head') %>
+  <body>
+  <%- include('../../layout/header') %>
+    <main>
+        <section class="main-conteiner">
+            <h1>got to details view</h1>
+            <ul id="book-list">
+              <% results.forEach(book=> { %>
+                <img src="<%= book.image_url %>"> 
+                <h4>
+                  Book Name: <%= book.title %>
+                </h4>
+                <h5>
+                    Auther Name: <%= book.auther %>
+                </h5>
+                <span>
+                  ISBN: <%= book.isbn %>
+                </span>
+                <p>
+                  <%= book.description %>
+                </p>
+                <% }) %>
+            </ul>
+          </section>
+    </main>
+    <%- include('../../layout/footer') %>
+</body>
+</html>

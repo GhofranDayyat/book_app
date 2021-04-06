@@ -89,7 +89,6 @@ function Book(info) {
   this.author = info.authors ? info.authors[0] :'Authors Were Found';
   this.description = info.descriptio?info.description:'Description Not Found';
   this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
-  this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No ISBN available';
 }
 
 function createSearch(req,res){

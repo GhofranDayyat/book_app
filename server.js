@@ -6,16 +6,30 @@ require('dotenv').config();
 const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
-// const pg = require('pg');
+const pg = require('pg');
 
 
 //client Obj
 // const client = new pg.Client(process.env.DATABASE_URL);
 
+let client = '';
+if (ENV === 'DEP') {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+} else {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+  });
+}
 // Application Setup
 const app = express();
-const PORT = process.env.PORT || 3434;
-
+const PORT = process.env.PORT || 4444;
+const DATABASE_URL= process.env.DATABASE_URL;
+const ENV = process.env.ENV || 'DEP';
 // Application Middleware
 app.use(express.static('./public'));
 app.use(cors());
@@ -28,15 +42,44 @@ app.set('view engine','ejs');
 app.get( `/searches/new`,showForm);
 app.get('/',homePage);
 app.post('/searches',createSearch);
-
-
+app.get('/books/:id',getBookDetail);
+app.post('/books',saveBook);
 
 function homePage(req,res){
-  res.render('pages/index');
+  const selectQuuery = 'SELECT * FROM tasks;';
+  client.query(selectQuuery).then(result=>{
+    res.render('pages/index',{result: result.rows});
+  }).catch(error=>{
+    handleError(error, res);
+  });
 }
 
 function showForm(req,res){
   res.render('pages/searches/new.ejs');
+}
+
+
+function getBookDetail(req,res){
+  const bookId = req.params.id;
+  const sqlQuery = 'SELECT * FROM tasks WHERE id=$1';
+  const saveValus = [bookId];
+  client.query(sqlQuery,saveValus).then(results=>{
+    res.render('pages/books/detail.ejs',{results:results.rows});
+  }).catch(error=>{
+    handleError(error, res);
+  });
+}
+
+
+function saveBook(req, res){
+  const {auther, title, isbn,image_url, description}=req.body;
+  const sqleSave = [auther, title, isbn,image_url, description];
+  const sqlQuery = 'INSERT INTO tasks (auther, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5) RETURNING id;'; //RETURNING any inserting value
+  client.query(sqlQuery, sqleSave).then((result)=>{
+    res.redirect(`/books/${result.rows[0].id}`);
+  }).catch(error=>{
+    handleError(error, res);
+  });
 }
 
 
@@ -46,13 +89,12 @@ function Book(info) {
   this.author = info.authors ? info.authors[0] :'Authors Were Found';
   this.description = info.descriptio?info.description:'Description Not Found';
   this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
-
 }
 
 function createSearch(req,res){
 
   let url = 'https://www.googleapis.com/books/v1/volumes';
-  console.log(req.body);
+  // console.log(req.body);
   const searchBy = req.body.searchBy;
   const searchValue = req.body.search;
   const query = {};
@@ -62,24 +104,27 @@ function createSearch(req,res){
   } else if (searchBy === 'author') {
     query['q'] = `inauthor:'${searchValue}'`;
   }
-  console.log(searchValue);
+  // console.log(searchValue);
   // send the URL to the servers API
-  console.log(query);
+  // console.log(query);
   superagent.get(url).query(query).then(search => {
     return search.body.items.map(searchBook => new Book(searchBook.volumeInfo));
   }).then(results => {
     res.render('pages/searches/show', { searchResults: results });
   }).catch((error) => {
-    console.error('ERROR', error);
-    res.status(500).render('pages/error');
+    handleError(error, res);
   });
 }
 
+function handleError(error, res) {
+  res.render('pages/error', { error: error });
+}
 
+client.connect().then(()=>{
+  app.listen(PORT,()=>{
+    console.log(`listening on PORT ${PORT}`);
+  });
 
-// Catch-all-errors
-app.get('*',(req,res)=>{
-  res.status(404).send('something went wrong');
 });
 
 app.listen(PORT,()=>{
@@ -87,11 +132,5 @@ app.listen(PORT,()=>{
 });
 
 
-// Connect to DB and Start the Web Server
-// client.connect().then(() => {
-//   app.listen(PORT, () => {
-//     console.log('Connected to database:', client.connectionParameters.database) ;//show what database we connected to
-//     console.log('Server up on', PORT);
-//   });
-// });
+
 

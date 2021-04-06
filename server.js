@@ -10,12 +10,26 @@ const pg = require('pg');
 
 
 //client Obj
-const client = new pg.Client(process.env.DATABASE_URL);
+// const client = new pg.Client(process.env.DATABASE_URL);
 
+let client = '';
+if (ENV === 'DEP') {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+} else {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+  });
+}
 // Application Setup
 const app = express();
 const PORT = process.env.PORT || 4444;
-
+const DATABASE_URL= process.env.DATABASE_URL;
+const ENV = process.env.ENV || 'DEP';
 // Application Middleware
 app.use(express.static('./public'));
 app.use(cors());

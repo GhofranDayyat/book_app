@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 
-  <%- include('../../layout/head') %>
+  <%- include('../../layout/head.ejs') %>
+</head>
 <body>
   <%- include('../../layout/header') %>
   <main>
@@ -10,16 +12,18 @@
       <section class="book-sec">
       <img src="<%= book.thumbnail %>" alt="">
       <h3><%= book.title %></h3>
-      <h4><%= book.author%></h4>
+      <h4><%= book.authors%></h4>
       <p><%= book.description%></p>
-      <form action="/books" method="POST">
+
+
+      <form id="show-form" action="/books" method="POST">
         <input type="hidden" value="<%= book.thumbnail %>" name="image_url">
         <input type="hidden" value="<%= book.title %>" name="title">
-        <input type="hidden" value="<%= book.author%>" name="author">
+        <input type="hidden" value="<%= book.authors%>" name="authors">
         <input type="hidden" value="<%= book.description%>" name="description">
         <input type="hidden" value="<%= book.isbn%>" name="isbn">
-      <input type="submit" value="Add to Collection">
-    </form>
+        <input id="add-butt" type="submit" value="Add to Collection">
+      </form>
   </section>
   <% }) %>
   

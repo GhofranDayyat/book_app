@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
+
   <%- include('../layout/head') %>
   <body>
   <%- include('../layout/header') %>
     <main>
-        <h2>Numbers Of Books <%=result.length%></h2>
-        <ul>
-            <% if (result.length) { %>
-              <% result.forEach(data=> { %>
-                <li>
+      <% if (result.length) { %>
+        <h2 style="text-align: center;">Numbers Of Books <%=result.length%></h2>
+        <section class="index-main"> 
+        <% result.forEach(data=> { %>
+          <section class="index-sec"> 
+           
                   <img src="<%= data.image_url %>"> 
                   <h4>
-                    <%= data.auther %>
+                    <%= data.authors %>
                   </h4>
                   <p>
                     <%= data.title %>
                   </p>
-                  <a href='/books/<%= data.id %>' target="_blank" rel="link">View Book details</a>
-                </li>
+                  <a href='/books/<%= data.id %>' target="_blank">View Book details</a>
+                  </section>
+             
                 <% }); %>
                   <% } else { %>
-                    <p>No data was found</p>
+                    <p style="text-align: center;font-size: x-large; color: #053536;">No Books in Your Collection</p>
                     <% } %>
-          </ul>
     </main>
     <%- include('../layout/footer') %>
 </body>

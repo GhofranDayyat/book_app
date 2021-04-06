@@ -6,16 +6,30 @@ require('dotenv').config();
 const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
-// const pg = require('pg');
+const pg = require('pg');
 
 
 //client Obj
 // const client = new pg.Client(process.env.DATABASE_URL);
 
+let client = '';
+if (ENV === 'DEP') {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+} else {
+  client = new pg.Client({
+    connectionString: DATABASE_URL,
+  });
+}
 // Application Setup
 const app = express();
-const PORT = process.env.PORT || 3434;
-
+const PORT = process.env.PORT || 4444;
+const DATABASE_URL= process.env.DATABASE_URL;
+const ENV = process.env.ENV || 'DEP';
 // Application Middleware
 app.use(express.static('./public'));
 app.use(cors());
@@ -60,9 +74,9 @@ function getBookDetail(req,res){
 function saveBook(req, res){
   const {auther, title, isbn,image_url, description}=req.body;
   const sqleSave = [auther, title, isbn,image_url, description];
-  const sqlQuery = 'INSERT INTO tasks (auther, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5);';
-  client.query(sqlQuery, sqleSave).then(()=>{
-    res.redirect('/');
+  const sqlQuery = 'INSERT INTO tasks (auther, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5) RETURNING id;'; //RETURNING any inserting value
+  client.query(sqlQuery, sqleSave).then((result)=>{
+    res.redirect(`/books/${result.rows[0].id}`);
   }).catch(error=>{
     handleError(error, res);
   });
@@ -103,17 +117,9 @@ function createSearch(req,res){
   });
 }
 
-
-
 function handleError(error, res) {
   res.render('pages/error', { error: error });
 }
-
-// Catch-all-errors
-// app.get('*',(req,res)=>{
-//   res.status(404).send('something went wrong');
-// });
-
 
 client.connect().then(()=>{
   app.listen(PORT,()=>{

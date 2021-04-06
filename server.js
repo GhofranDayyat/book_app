@@ -7,36 +7,39 @@ const express = require('express');
 const superagent  = require('superagent');
 const cors = require('cors');
 const pg = require('pg');
+const methodOverrid = require('method-override');
 
-
-//client Obj
-// const client = new pg.Client(process.env.DATABASE_URL);
 
 
 // Application Setup
 const app = express();
 const PORT = process.env.PORT || 4444;
 const DATABASE_URL= process.env.DATABASE_URL;
-const ENV = process.env.ENV || 'DEP';
+// const ENV = process.env.ENV || 'DEP';
 // Application Middleware
+
+
 app.use(express.static('./public'));
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverrid('_methodOverrid'));
 
+//client Obj
+const client = new pg.Client(DATABASE_URL);
 
-let client = '';
-if (ENV === 'DEP') {
-  client = new pg.Client({
-    connectionString: DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-} else {
-  client = new pg.Client({
-    connectionString: DATABASE_URL,
-  });
-}
+// let client = '';
+// if (ENV === 'DEP') {
+//   client = new pg.Client({
+//     connectionString: DATABASE_URL,
+//     ssl: {
+//       rejectUnauthorized: false
+//     }
+//   });
+// } else {
+//   client = new pg.Client({
+//     connectionString: DATABASE_URL,
+//   });
+// }
 
 // Set the view engine for server-side templating
 app.set('view engine','ejs');
@@ -46,6 +49,10 @@ app.get('/',homePage);
 app.post('/searches',createSearch);
 app.get('/books/:id',getBookDetail);
 app.post('/books',saveBook);
+app.put('/books/:id',updatBookDetail);
+app.delete('/books/:id',deleteBook);
+
+
 
 function homePage(req,res){
   const selectQuuery = 'SELECT * FROM tasks;';
@@ -67,6 +74,7 @@ function getBookDetail(req,res){
   const saveValus = [bookId];
   client.query(sqlQuery,saveValus).then(results=>{
     res.render('pages/books/detail.ejs',{results:results.rows});
+    console.log(results.rows[0]);
   }).catch(error=>{
     handleError(error, res);
   });
@@ -74,11 +82,35 @@ function getBookDetail(req,res){
 
 
 function saveBook(req, res){
-  const {auther, title, isbn,image_url, description}=req.body;
-  const sqleSave = [auther, title, isbn,image_url, description];
-  const sqlQuery = 'INSERT INTO tasks (auther, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5) RETURNING id;'; //RETURNING any inserting value
+  const {authors, title, isbn,image_url, description}=req.body;
+  const sqleSave = [authors, title, isbn,image_url, description];
+  const sqlQuery = 'INSERT INTO tasks (authors, title, isbn, image_url, description ) VALUES($1, $2, $3, $4, $5) RETURNING id;'; //RETURNING any inserting value
   client.query(sqlQuery, sqleSave).then((result)=>{
     res.redirect(`/books/${result.rows[0].id}`);
+  }).catch(error=>{
+    handleError(error, res);
+  });
+}
+
+
+function updatBookDetail(req,res){
+  const bookId = req.params.id;
+  const {authors, title, isbn,image_url, description}=req.body;
+  const saveValus = [authors, title, isbn,image_url, description, bookId];
+  const updatSql = `UPDATE tasks SET authors=$1, title=$2, isbn=$3,image_url=$4, description=$5 WHERE id=$6;`;
+  client.query(updatSql,saveValus).then(()=>{
+    res.redirect(`/books/${bookId}`);
+  }).catch(error=>{
+    handleError(error, res);
+  });
+}
+
+function deleteBook(req, res){
+  const bookId = req.params.id;
+  const saveValus = [bookId];
+  const sqleSave = `DELETE FROM tasks WHERE id=$1;`;
+  client.query(sqleSave,saveValus).then(()=>{
+    res.redirect('/');
   }).catch(error=>{
     handleError(error, res);
   });
@@ -88,8 +120,8 @@ function saveBook(req, res){
 //Constrecter
 function Book(info) {
   this.title = info.title?info.title:'Title was Found';
-  this.author = info.authors ? info.authors[0] :'Authors Were Found';
-  this.description = info.descriptio?info.description:'Description Not Found';
+  this.authors = info.authors ? info.authors[0] :'authors Were Found';
+  this.description = info.descriptio ? info.description :'Description Not Found';
   this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
 }
 
@@ -103,8 +135,8 @@ function createSearch(req,res){
   if (searchBy === 'title') {
     query['q'] = `intitle:'${searchValue}'`;
 
-  } else if (searchBy === 'author') {
-    query['q'] = `inauthor:'${searchValue}'`;
+  } else if (searchBy === 'authors') {
+    query['q'] = `inauthors:'${searchValue}'`;
   }
   // console.log(searchValue);
   // send the URL to the servers API

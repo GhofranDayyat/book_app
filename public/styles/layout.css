@@ -1,19 +1,60 @@
 /*mobile view */
 @media screen  and (max-width:768px){
-.main-sec{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content:  center;
-}
-.book-sec{
+  .main-sec{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:  center;
+  }
+  .book-sec{
+    text-align: center;
+    align-items: center;
+    box-shadow: 5px 10px 18px #000;
+    padding: 15%;
+    margin: 7%;
+   background-color: #c6f5c3;
+  }
+.detail-sec{
+  width: 50%;
+  box-shadow: 5px 10px 18px #000;
   text-align: center;
-
+  justify-content: center;
+  align-items: center;
+ padding: 5%;
+ margin: 7% ;
+ margin-left: 6%;
+ background-color: #c8eec5;
+}
+.index-sec{
+  text-align: center;
   align-items: center;
   box-shadow: 5px 10px 18px #000;
-  padding: 5%;
+  padding: 10%;
   margin: 7%;
  background-color: #c6f5c3;
 }
+
+#show-form{
+  border: none;
+}
+#add-butt{
+  align-items: center;
+  padding: 5%;
+  display: block;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  color: black;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  margin: 10%;
+}
+#add-butt:hover {
+  background-color: black;
+  color: white;
+} 
 }
 
 /* desktop view*/
@@ -21,22 +62,68 @@
     body{
       width: 960px;
       }
-
 .main-sec{
   display : grid;
   grid-template-columns: repeat(3,33.5%);
   grid-template-rows: repeat(3,28%);
-  width: 130%;
+  width: 130%
+
 
 }
 .book-sec{
+ 
   box-shadow: 5px 10px 18px #000;
   text-align: center;
   justify-content: center;
   align-items: center;
  padding: 5%;
- margin: 7%;
+ margin: 7% ;
+ margin-left: 2%;
  background-color: #c8eec5;
+}
+.detail-sec{
+  width: 50%;
+  box-shadow: 5px 10px 18px #000;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+ padding: 5%;
+ margin: 7% ;
+ margin-left: 6%;
+ background-color: #c8eec5;
+}
+.index-sec{
+  width: 50%;
+  box-shadow: 5px 10px 18px #000;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+ padding: 5%;
+ margin: 7% ;
+ margin-left: 6%;
+ background-color: #c8eec5;
+}
+#show-form{
+  border: none;
+}
+#add-butt{
+  align-items: center;
+  padding: 10%;
+  display: block;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  color: black;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  margin: 10%;
+}
+#add-butt:hover {
+  background-color: black;
+  color: white;
 }
 }
 

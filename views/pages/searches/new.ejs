@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('../.././layout/head.ejs') %>
+  
+    <%- include('../../layout/head.ejs') %>
 <body>
   <%- include('../../layout/header') %>
-    <main>
-      </style>
-        <h2>Serach by Title or Author </h2>
+    <main>    
+        <h2 class="serch-tit">Serach by Title or Author </h2>
         <form action="/searches" method="POST" >
             <input type="text" name="search" placeholder="Enter  Title or Author" required>
             <fieldset>
@@ -15,12 +15,12 @@
                 </label>
               </fieldset>
               <fieldset>
-                <label for="author">
+                <label for="authors">
                   <span>Auther</span>
-                  <input type="radio" name="searchBy" value="author" required>
+                  <input type="radio" name="searchBy" value="authors" required>
                 </label>
               </fieldset>
-              <button type="submit">Search the Google Books API</button> 
+              <button id="api-butt" type="submit">Search the Google Books API</button> 
         </form>
     </main>
     <%- include('../../layout/footer') %>

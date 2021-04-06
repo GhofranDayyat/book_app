@@ -44,8 +44,8 @@ function showForm(req,res){
 function Book(info) {
   this.title = info.title?info.title:'Title was Found';
   this.author = info.authors ? info.authors[0] :'Authors Were Found';
-  this.description = info.descriptio?info.description:'Description was Found';
-  this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i7.uihere.com/icons/829/139/596/thumbnail-caefd2ba7467a68807121ca84628f1eb.png';
+  this.description = info.descriptio?info.description:'Description Not Found';
+  this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
 
 }
 

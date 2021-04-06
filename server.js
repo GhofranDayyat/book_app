@@ -12,6 +12,18 @@ const pg = require('pg');
 //client Obj
 // const client = new pg.Client(process.env.DATABASE_URL);
 
+
+// Application Setup
+const app = express();
+const PORT = process.env.PORT || 4444;
+const DATABASE_URL= process.env.DATABASE_URL;
+const ENV = process.env.ENV || 'DEP';
+// Application Middleware
+app.use(express.static('./public'));
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+
+
 let client = '';
 if (ENV === 'DEP') {
   client = new pg.Client({
@@ -25,16 +37,6 @@ if (ENV === 'DEP') {
     connectionString: DATABASE_URL,
   });
 }
-// Application Setup
-const app = express();
-const PORT = process.env.PORT || 4444;
-const DATABASE_URL= process.env.DATABASE_URL;
-const ENV = process.env.ENV || 'DEP';
-// Application Middleware
-app.use(express.static('./public'));
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-
 
 // Set the view engine for server-side templating
 app.set('view engine','ejs');
@@ -125,10 +127,6 @@ client.connect().then(()=>{
     console.log(`listening on PORT ${PORT}`);
   });
 
-});
-
-app.listen(PORT,()=>{
-  console.log(`listening on PORT ${PORT}`);
 });
 
 

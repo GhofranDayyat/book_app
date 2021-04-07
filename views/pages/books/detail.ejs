@@ -9,6 +9,7 @@
             <h2 style="text-align: left;padding-left: 10%;font-size: xx-large;">Book Details</h2>
       
             <section class="detail-sec">  
+               <section class="detail-info">
                 <img src="<%= results[0].image_url %>"> 
                 <h4>
                   Book Name: <%= results[0].title %>
@@ -19,13 +20,15 @@
                   <li>ISBN: <%= results[0].isbn %></li>
                   <li>Book Shelf: <%= results[0].id %></li>
                 </ul>
-         
-                  <form id="delet-form" action="/books/<%=results[0].id%>?_methodOverrid=DELETE" method="POST">
-                    <input type="hidden" value="<%= results[0].id%>">
-                    <input id="delet-but" type="submit" value="DELETE">
+               </section>
+               <section  class="detail-butt">
+                 <button id="ubdatButt" onclick="updatButt()" >Update Book</button>
+                    <form id="delet-form" action="/books/<%=results[0].id%>?_methodOverrid=DELETE" method="POST">
+                      <input type="hidden" value="<%= results[0].id%>">
+                      <input id="delet-but" type="submit" value="DELETE">
                     </form>
-                    <button id="ubdatButt" onclick="updatButt()" >Update Book</button>
-      
+               </section>
+
               </section>
       
       

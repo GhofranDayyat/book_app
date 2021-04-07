@@ -6,21 +6,21 @@
   <%- include('../../layout/header') %>
     <main>    
         <h2 class="serch-tit">Serach by Title or Author </h2>
-        <form action="/searches" method="POST" >
+        <form id="search-form" action="/searches" method="POST" >
             <input type="text" name="search" placeholder="Enter  Title or Author" required>
-            <fieldset>
-                <label for="title">
+            <fieldset class="search-feild">
+                <label class="search-input"for="title">
                   <span>Title</span>
-                  <input type="radio" name="searchBy" value="title" required>
+                  <input  type="radio" name="searchBy" value="title" required>
                 </label>
               </fieldset>
-              <fieldset>
-                <label for="authors">
+              <fieldset class="search-feild">
+                <label  class="search-input" for="authors">
                   <span>Auther</span>
                   <input type="radio" name="searchBy" value="authors" required>
                 </label>
               </fieldset>
-              <button id="api-butt" type="submit">Search the Google Books API</button> 
+              <button id="api-butt" type="submit">Search Books</button> 
         </form>
     </main>
     <%- include('../../layout/footer') %>

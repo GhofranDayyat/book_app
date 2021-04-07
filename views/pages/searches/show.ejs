@@ -10,12 +10,12 @@
     <section class="main-sec">
       <% searchResults.forEach(book=> {%>
       <section class="book-sec">
-      <img src="<%= book.thumbnail %>" alt="">
-      <h3><%= book.title %></h3>
-      <h4><%= book.authors%></h4>
-      <p><%= book.description%></p>
-
-
+        <div class="show-info">
+          <img src="<%= book.thumbnail %>" alt="">
+          <h3 ><%= book.title %></h3>
+          <h4><%= book.authors%></h4>
+          <p><%= book.description%></p>
+        </div>
       <form id="show-form" action="/books" method="POST">
         <input type="hidden" value="<%= book.thumbnail %>" name="image_url">
         <input type="hidden" value="<%= book.title %>" name="title">
@@ -24,10 +24,10 @@
         <input type="hidden" value="<%= book.isbn%>" name="isbn">
         <input id="add-butt" type="submit" value="Add to Collection">
       </form>
-  </section>
-  <% }) %>
-  
     </section>
+    
+    <% }) %>
+  </section>
    
 
   </main>

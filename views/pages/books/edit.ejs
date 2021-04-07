@@ -6,17 +6,17 @@
     <main>
         <section id="updat-sec" style="display: none;">
             <form id="updat-form" action="/books/<%=results[0].id%>?_methodOverrid=PUT" method="POST">
-                
+                <ul class="updat-title">
                   <h2>Updat Your Book</h2>
-                  Title: 
+                   <li>Title:</li>  
                   <input type="text" name="title" value="<%= results[0].title %>">
-                  Auther:
+                  <li>Auther:</li> 
                   <input type="text" name="authors" value="<%= results[0].authors%>">
-                  ISBN:
+                  <li>ISBN:</li>
                   <input type="text" name="isbn" value="<%= results[0].isbn %>">
-                 image_url
+                 <li>image_url</li>
                  <input type="text" name="image_url" value="<%= results[0].image_url %>">
-                  Description
+                  <li>Description</li>
                  <br>
                  <textarea cols="40" rows="15" name="description">
                    <%= results[0].description %>
@@ -24,6 +24,8 @@
                  <br>              
                
                 <input id="submitButt" type="submit" value="submit">
+                </ul>
+
                </form>
           </section>
     </main>

@@ -19,36 +19,38 @@ const ENV = process.env.ENV || 'DEP';
 // Application Middleware
 
 
-app.use(express.static('./public'));
+app.use(express.static('./public')); //all paths from the a nother files to here start from ./public
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverrid('_methodOverrid'));
 
 //client Obj
-// const client = new pg.Client(DATABASE_URL);
+const client = new pg.Client(DATABASE_URL);
 
-let client = '';
-if (ENV === 'DEP') {
-  client = new pg.Client({
-    connectionString: DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-} else {
-  client = new pg.Client({
-    connectionString: DATABASE_URL,
-  });
-}
+// let client = '';
+// if (ENV === 'DEP') {
+//   client = new pg.Client({
+//     connectionString: DATABASE_URL,
+//     ssl: {
+//       rejectUnauthorized: false
+//     }
+//   });
+// } else {
+//   client = new pg.Client({
+//     connectionString: DATABASE_URL,
+//   });
+// }
 
 // Set the view engine for server-side templating
 app.set('view engine','ejs');
+
+//routes
 // app.get('/hello',homePage);
 app.get( `/searches/new`,showForm);
-app.get('/',homePage);
 app.post('/searches',createSearch);
-app.get('/books/:id',getBookDetail);
-app.post('/books',saveBook);
+app.get('/',homePage);//2
+app.get('/books/:id',getBookDetail);//3
+app.post('/books',saveBook);//1
 app.put('/books/:id',updatBookDetail);
 app.delete('/books/:id',deleteBook);
 
@@ -74,7 +76,7 @@ function getBookDetail(req,res){
   const saveValus = [bookId];
   client.query(sqlQuery,saveValus).then(results=>{
     res.render('pages/books/detail.ejs',{results:results.rows});
-    console.log(results.rows[0]);
+    // console.log(results.rows[0]);
   }).catch(error=>{
     handleError(error, res);
   });
@@ -121,7 +123,7 @@ function deleteBook(req, res){
 function Book(info) {
   this.title = info.title?info.title:'Title was Found';
   this.authors = info.authors ? info.authors[0] :'authors Were Found';
-  this.description = info.descriptio ? info.description :'Description Not Found';
+  this.description = info.description ? info.description :'Description Not Found';
   this.thumbnail = info.imageLinks? info.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
 }
 
@@ -129,7 +131,7 @@ function createSearch(req,res){
 
   let url = 'https://www.googleapis.com/books/v1/volumes';
   // console.log(req.body);
-  const searchBy = req.body.searchBy;
+  const searchBy = req.body.searchBy; //form =req.body , and we target the name of the input
   const searchValue = req.body.search;
   const query = {};
   if (searchBy === 'title') {
@@ -145,8 +147,6 @@ function createSearch(req,res){
     return search.body.items.map(searchBook => new Book(searchBook.volumeInfo));
   }).then(results => {
     res.render('pages/searches/show', { searchResults: results });
-  }).catch((error) => {
-    handleError(error, res);
   });
 }
 
